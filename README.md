@@ -79,4 +79,29 @@ In windows i found some time it shows as `USB Serial Device (COMXX)`
 And For any Reasle Product you shoud use your own Registered PID And VID.
 
 
+# Tips To Emulate the USB Plug and Unplug 
+
+This will render Unplug and plug the device [code](./USB%20Serial%20CDC%20Firmware/USB_DEVICE/App/usb_device.c#L67-L84)
+
+```c
+  /* Rendering hardware reset harmless (no need to replug USB cable): */        
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PA12, a.k.a. USB_DP */
+  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  HAL_Delay(5);
+  /* Hardware reset rendered harmless! */
+```
+
 [ ---- All Images are Used From Google Search ---- ]
